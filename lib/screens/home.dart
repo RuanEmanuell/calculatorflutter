@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import "dart:async";
+import "dart:convert";
+
 
 class HomeScreen extends StatefulWidget{
   @override
@@ -14,6 +18,21 @@ class _HomeScreen extends State<HomeScreen>{
   var acertos=0;
   var resultado=[];
   var numeros=[];
+  var data;
+  var token;
+
+  Future requestData() async {
+    var response= await http.get(Uri.parse("https://apiloterias.com.br/app/resultado?loteria=lotofacil&token=$token&concurso=2622"));
+    if(response.statusCode==200){
+    print(response.body);
+    data=json.decode(response.body);
+    }
+  }
+
+  void initState(){
+    super.initState();
+    requestData();
+  }
 
   @override
   Widget build(BuildContext context){
@@ -21,75 +40,12 @@ class _HomeScreen extends State<HomeScreen>{
       body: Center(
         child: Column(
           children: [
-            Container(
-                  margin:EdgeInsets.only(top: 30),
-                  width:300,
-                  height:100,
-                  child: Column(
-                    children: [
-                      TextField(
-                        controller:firstController,
-                        keyboardType:TextInputType.number,
-                        decoration:InputDecoration(
-                          hintText:"Resultado do jogo"
-                        )
-                      ),
-                      ElevatedButton(
-                        onPressed:(){
-                          setState((){
-                           resultado=[];
-                           resultado.add(firstController.text);
-                           print(resultado);
-                          });
-                        },
-                        child:Text("Enviar")
-                      )
-                    ],
-                  ),
-                ),
-                Container(
-                  width:300,
-                  height:100,
-                  child: Column(
-                    children: [
-                      TextField(
-                        controller:secondController,
-                        keyboardType:TextInputType.number,
-                        decoration:InputDecoration(
-                          hintText:"Digite uma coluna de números"
-                        )
-                      ),
-                      ElevatedButton(
-                        onPressed:(){
-                          setState(() {
-                           numeros=[];
-                           numeros.add(secondController.text);
-                           print(numeros);
-                          });
-                        },
-                        child:Text("Enviar")
-                      )
-                    ],
-                  ),
-                ),
-                Container(
-                  child:Column(
-                    children: [
-                      Container(height: 50),
-                      ElevatedButton(
-                        child:Text("Checar"),
-                        onPressed:(){
+              Text(data["dezenas"].toString())
 
-                        }
-                      ),
-                      Text("Voce acertou ${acertos} números"),
-                    ],
-                  )
-                )
-          ],
+            ]
+        )
         ),
-      )
-    );
+      );
   }
 
 
