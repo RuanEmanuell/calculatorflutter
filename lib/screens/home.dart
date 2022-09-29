@@ -15,10 +15,11 @@ class _HomeScreen extends State<HomeScreen>{
   TextEditingController controller=TextEditingController();
 
   var acertos=0;
-  var resultado=[];
-  var numeros=[];
+  var ultimoNumero=[];
   var data;
-  var token;
+  var avisoMesmoNumero=false;
+  var avisoMaior15=false;
+  var token="4fnWe2wVb2iv2jm";
 
   Future requestData() async {
     var response= await http.get(Uri.parse("https://apiloterias.com.br/app/resultado?loteria=lotofacil&token=$token&concurso=2622"));
@@ -45,7 +46,7 @@ class _HomeScreen extends State<HomeScreen>{
                       children:[
                         Container(
                         margin:EdgeInsets.only(
-                        top: statusBarHeight+10),
+                        top: statusBarHeight),
                         child: Text("Resultado do concurso ${data["numero_concurso"]}",
                         style:TextStyle(
                           fontSize:25
@@ -81,15 +82,43 @@ class _HomeScreen extends State<HomeScreen>{
                           children:[
                             Text("Checar seus acertos"),
                             TextField(
-                              controller:controller
+                              keyboardType:TextInputType.number,
+                              controller:controller,
+                              maxLength:2
                             ),
                             ElevatedButton(
                               onPressed:(){
-
+                                  if(ultimoNumero.length<15){
+                                    if(controller.text.length<2){
+                                      controller.text="0"+controller.text;
+                                    }
+                                  if(ultimoNumero.contains(controller.text)){
+                                    setState((){
+                                      avisoMesmoNumero=true;
+                                    });
+                                  }else{
+                                  setState((){
+                                    ultimoNumero.add(controller.text);
+                                  });
+                                  if(data["dezenas"].contains(controller.text)){
+                                  setState((){
+                                    acertos++;
+                                    avisoMesmoNumero=false;
+                                  });
+                                  }
+                                }
+                                }else{
+                                  setState((){
+                                    avisoMaior15=true;
+                                  });
+                                }
                               },
                               child:Text("Checar")
                             ),
-                            Text("Você acertou $acertos números")
+                            Text("Você colocou ${ultimoNumero.length} números"),
+                            Text("e você acertou $acertos números"),
+                            avisoMesmoNumero ? Text("Você já colocou esse número") : Container(),
+                            avisoMaior15 ? Text("Você já colocou 15 números") : Container()
                           
                           ]
                        )
