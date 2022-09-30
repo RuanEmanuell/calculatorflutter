@@ -31,7 +31,7 @@ class _NumberScreen extends State<NumberScreen>{
   bool loading=true;
   bool avisoMesmoNumero=false;
   bool avisoMaior15=false;
-  String token="4fnWe2wVb2iv2jm";
+  String token="Sua key da API aqui";
 
   var textStyleBig=TextStyle(
                     fontSize:25
@@ -122,6 +122,7 @@ class _NumberScreen extends State<NumberScreen>{
                               !avisoMaior15 ? ElevatedButton(
                                 style:widget.buttonStyle,
                                 onPressed:(){
+                                    if(controller.text.isNotEmpty){
                                     //Se o usuário checou 15 números ou menos
                                     if(ultimoNumero.length<15){
                                       //Se o número tiver apenas 1 digito, adicionar o 0
@@ -150,6 +151,7 @@ class _NumberScreen extends State<NumberScreen>{
                                       avisoMaior15=true;
                                     });
                                   }
+                                 }
                                 },
                                 child:Text("Checar") 
                               ): Container(),
