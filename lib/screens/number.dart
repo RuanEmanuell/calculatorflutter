@@ -34,7 +34,7 @@ class _NumberScreen extends State<NumberScreen>{
   bool loading=true;
   bool avisoMesmoNumero=false;
   bool avisoMaior15=false;
-  String token="4fnWe2wVb2iv2jm";
+  String token="SUA KEY DA API AQUI";
 
   var textStyleBig=const TextStyle(
                     fontSize:25
