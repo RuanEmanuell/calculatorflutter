@@ -7,9 +7,14 @@ import "dart:convert";
 
 class NumberScreen extends StatefulWidget{
 
-  NumberScreen({Key? key, this.numeroConcurso}) : super(key: key);
+  NumberScreen({Key? key, 
+  this.numeroConcurso, 
+  this.buttonStyle, 
+  this.inputDecoration}) : super(key: key);
 
   var numeroConcurso;
+  var buttonStyle;
+  var inputDecoration;
 
   @override
   _NumberScreen createState()=> _NumberScreen();
@@ -26,15 +31,12 @@ class _NumberScreen extends State<NumberScreen>{
   bool loading=true;
   bool avisoMesmoNumero=false;
   bool avisoMaior15=false;
-  String token="Seu token aqui";
+  String token="4fnWe2wVb2iv2jm";
 
   var textStyleBig=TextStyle(
                     fontSize:25
                    );
 
-  var buttonStyle=ElevatedButton.styleFrom(
-                   primary:Colors.green
-                  );
 
   Future requestData() async {
     var response= await http.get(Uri.parse("https://apiloterias.com.br/app/resultado?loteria=lotofacil&token=$token&concurso=${widget.numeroConcurso}"));
@@ -59,11 +61,13 @@ class _NumberScreen extends State<NumberScreen>{
     return Scaffold(
       appBar:AppBar(
         centerTitle:true,
-        backgroundColor:Colors.green,
+        backgroundColor:Color.fromRGBO(194, 49, 143, 1),
         title:Text("Conferir resultado")
       ),
       body: Center(
-        child: loading ? CircularProgressIndicator() : ListView(
+        child: loading ? CircularProgressIndicator(
+          color:Color.fromRGBO(194, 49, 143, 1)
+        ) : ListView(
           children: [
             Column(
             children: [
@@ -84,13 +88,14 @@ class _NumberScreen extends State<NumberScreen>{
                                         margin:EdgeInsets.all(10),
                                         padding:EdgeInsets.all(7.5),
                                         decoration:BoxDecoration(
-                                          color:Color.fromARGB(255, 75, 141, 76),
-                                          border:Border.all(color:Colors.green,
+                                          color:Color.fromRGBO(194, 49, 143, 1),
+                                          border:Border.all(
+                                          color:Color.fromARGB(255, 131, 25, 94),
                                           width:5),
                                           borderRadius:BorderRadius.circular(20)
                                         ),
                                         child:Text(data["dezenas"][index], style:TextStyle(
-                                          fontSize:30,
+                                          fontSize: screenWidth>400? 30:15,
                                           color:Colors.white
                                         ))
                                     );
@@ -101,24 +106,21 @@ class _NumberScreen extends State<NumberScreen>{
                            )
                         ),
                         Container(
-                          margin:EdgeInsets.only(top: 20),
+                          margin:EdgeInsets.only(top: 10),
                           child:Column(
                             children:[
                               Text("Checar seus acertos", style:textStyleBig),
                               Container(
                                 margin:EdgeInsets.all(10),
                                 child: TextField(  
-                                  decoration:InputDecoration(
-                                    border:OutlineInputBorder(),
-                                    hintText:"Digite um número"
-                                  ),
+                                  decoration:widget.inputDecoration,
                                   keyboardType:TextInputType.number,
                                   controller:controller,
                                   maxLength:2
                                 ),
                               ),
-                              ElevatedButton(
-                                style:buttonStyle,
+                              !avisoMaior15 ? ElevatedButton(
+                                style:widget.buttonStyle,
                                 onPressed:(){
                                     //Se o usuário checou 15 números ou menos
                                     if(ultimoNumero.length<15){
@@ -134,12 +136,12 @@ class _NumberScreen extends State<NumberScreen>{
                                       }else{
                                       setState((){
                                         ultimoNumero.add(controller.text);
+                                        avisoMesmoNumero=false;
                                       });
                                       //Se o número digitado estiver entre os sorteados
                                       if(data["dezenas"].contains(controller.text)){
                                       setState((){
                                         acertos++;
-                                        avisoMesmoNumero=false;
                                       });
                                         }
                                        }
@@ -149,16 +151,18 @@ class _NumberScreen extends State<NumberScreen>{
                                     });
                                   }
                                 },
-                                child:Text("Checar")
-                              ),
+                                child:Text("Checar") 
+                              ): Container(),
+                              Container(height: 10),
                               Text("Você colocou ${ultimoNumero.length} números"),
                               Text("e você acertou $acertos números"),
+                              Container(height: 10),
                               avisoMesmoNumero ? Text("Você já colocou esse número") : Container(),
                               avisoMaior15 ? Text("Você já colocou 15 números") : Container(),
                               Container(
                                 margin:EdgeInsets.only(top: 10),
                                 child:ElevatedButton(
-                                  style:buttonStyle,
+                                  style:widget.buttonStyle,
                                   onPressed:(){
                                     setState((){
                                       avisoMaior15=false;
