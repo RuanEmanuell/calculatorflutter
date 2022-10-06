@@ -1,3 +1,5 @@
+# Check the English version <a href="README.md">here</a>
+
 ### LotoFacil Flutter
 
 Um projeto simples para fazer vericação dos resultados da <a href="https://www.google.com/search?q=lotofacil">Lotofácil</a> usando a <a href="https://apiloterias.com.br/">API das Loterias</a>, pois meu pai me pede direto pra checar os resultados dos jogos dele e no papel é um processo bem demorado e complicado. 😁
